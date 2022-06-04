@@ -31,7 +31,8 @@ const thoughtController = {
         res.json(dbThoughtData);
       })
       .catch((err) => {
-        res.status(err);
+        console.log(err);
+        res.sendStatus(400);
       });
   },
 
@@ -72,23 +73,26 @@ const thoughtController = {
   },
 
   deleteThought({ params }, res) {
-    Thought.findOneAndDelete({ _id: params.id }).then((dbThoughtData) => {
-      if (!dbThoughtData) {
-        res.status(404).json({ message: "No thoughts with ID" });
-        return;
-      }
-      return User.findByIdAndUpdate(
-        { _id: params.userId },
-        { $pull: { thoughts: params.id } },
-        { new: true }
-      );
-    });
-    res
-      .json(dbThoughtData)
-
-      .catch((err) => {
-        res.json(err);
-      });
+    Thought.findOneAndDelete({ _id: params.id })
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          res.status(404).json({ message: "No thoughts with ID" });
+          return;
+        }
+        return User.findByIdAndUpdate(
+          { _id: params.userId },
+          { $pull: { thoughts: params.id } },
+          { new: true }
+        );
+      })
+      .then((dbUserData) => {
+        if (!dbUserData) {
+          res.status(404).json({ message: "No User with ID" });
+          return;
+        }
+        res.json(dbUserData);
+      })
+      .catch((err) => res.json(err));
   },
 
   createReaction({ params, body }, res) {
@@ -119,7 +123,7 @@ const thoughtController = {
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          res.status(404).json({ message: "No thought with ID" });
+          res.status(404).json({ message: "No matching ID" });
           return;
         }
         res.json(dbThoughtData);
