@@ -7,7 +7,8 @@ const userController = {
       .sort({ _id: -1 })
       .then((dbUserData) => res.json(dbUserData))
       .catch((err) => {
-        res.json(err);
+        console.log(err);
+        res.sendStatus(400);
       });
   },
 
@@ -20,15 +21,16 @@ const userController = {
       .populate({
         path: "friends",
         select: "-__v",
-      });
-    then((dbUserData) => {
+      })
+      .then((dbUserData) => {
       if (!dbUserData) {
         res.status(404).json({ message: "No user with ID" });
         return;
       }
       res.json(dbUserData);
     }).catch((err) => {
-      res.json(err);
+      console.log(err);
+        res.sendStatus(400);
     });
   },
   createUser({ body }, res) {
@@ -91,7 +93,7 @@ const userController = {
   deleteFriend({ params }, res) {
     User.findOneAndUpdate(
       { _id: params.userId },
-      { $pull: { friends: friendId } },
+      { $pull: { friends: params.friendId } },
       { new: true }
     )
       .then((dbUserData) => {

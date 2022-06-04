@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 const moment = require("moment");
-const { schema } = require("./thought");
+
 
 const UserSchema = new Schema(
   {
@@ -14,7 +14,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/],
+      match: [/.+@.+\..+/],
     },
     thoughts: [
       {

@@ -1,7 +1,7 @@
 const { User, Thought } = require("../models");
 
 const thoughtController = {
-  getAllThoughts(req, res) {
+  getAllThought(req, res) {
     Thought.find({})
       .populate({
         path: "reactions",
@@ -11,7 +11,8 @@ const thoughtController = {
       .sort({ _id: -1 })
       .then((dbThoughtData) => res.json(dbThoughtData))
       .catch((err) => {
-        res.status(err);
+        console.log(err);
+        res.sendStatus(400);
       });
   },
 
@@ -55,7 +56,7 @@ const thoughtController = {
       .catch((err) => res.json(err));
   },
 
-  updateThoughts({ params, body }, res) {
+  updateThought({ params, body }, res) {
     Thought.findOneAndUpdate({ _id: params.id }, body, {
       new: true,
       runValidators: true,
@@ -67,9 +68,7 @@ const thoughtController = {
         }
         res.json(dbThoughtData);
       })
-      .catch((err) => {
-        res.json(err);
-      });
+      .catch((err) => res.json(err));
   },
 
   deleteThought({ params }, res) {
